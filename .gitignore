@@ -1,3 +1,9 @@
+# Eclipse Project files and folders
+/Debug/
+/.project
+/.cproject
+/.settings/
+
 # Compiled Object files
 *.slo
 *.lo
