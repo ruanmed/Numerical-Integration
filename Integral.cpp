@@ -5,20 +5,27 @@
  *      Author: Ruan
  */
 #include "Integral.hpp"
+double E=1e-7;
 
 void  Integral::partitionateInterval(const bool &saveLog){
 	double amp=(upperLimit-bottomLimit),passo;
-	int c;
+	int c,divisoes;
+	if(amp<1)
+		divisoes=1;
+	else
 	if(amp<10)
-		passo=amp/100000;
+		divisoes=100000;
 	else
 	if(amp<100)
-		passo=amp/1000000;
+		divisoes=1000000;
 	else
 	if(amp<1000)
-		passo=amp/10000000;
+		divisoes=10000000;
 	else
-		passo=0.1;
+		divisoes=(int)(amp/0.1);
+
+	passo=amp/divisoes;
+	setError(divisoes*E);//Tratanto acumulo dos erros pela utilização da soma de integrais
 
 	for(c=0;(c+1)*passo<upperLimit;c++)
 	{
@@ -35,7 +42,7 @@ void  Integral::partitionateInterval(const bool &saveLog){
 }
 
 double Integral::partitionatedIntervalIntegralSolution(double begin,double end,const bool &saveLog){
-	double A,Aa,dx=end-begin,E=1e-7;
+	double A,Aa,dx=end-begin;
 	long long int c,i=1;//c - Contador e i = n° de intervalos
 	double temp[] = { 0 };
 	dx=end-begin;
@@ -122,10 +129,8 @@ void Integral::readFunction(string &f){
 void Integral::solveWithTrapeziumRule(const bool &saveLog){
 	if (getUpperLimit() == getBottomLimit())
 		setResult(0);
-	else if((getUpperLimit()-getBottomLimit())>1)
-		partitionateInterval(saveLog);
 	else
-		setResult(partitionatedIntervalIntegralSolution(getBottomLimit(),getUpperLimit(),saveLog));
+		partitionateInterval(saveLog);
 
 }
 
@@ -135,11 +140,11 @@ void Integral::solveIntegration(){
 
 void Integral::showSolution(){
 	file << setprecision(6)<< "A solucao da integral de f(x) = " << sfunction <<
-			" no intervalo de " << getBottomLimit() <<
+			" , no intervalo de " << getBottomLimit() <<
 			" até " << setprecision(6) << getUpperLimit() << " eh: " << setprecision(6) <<
-			getResult() << endl;
+			getResult() << endl<<"O erro associado é de: "<<getError()<<endl;
 	cout << setprecision(6)<< "A solucao da integral de f(x) = " << sfunction <<
-			" no intervalo de " << getBottomLimit() <<
+			" , no intervalo de " << getBottomLimit() <<
 			" até " << setprecision(6) << getUpperLimit() << " eh: " << setprecision(6) <<
-			getResult() << endl;
+			getResult() << endl<<"O erro associado é de: "<<getError()<<endl;
 }

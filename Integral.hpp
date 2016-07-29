@@ -28,6 +28,8 @@ class Integral{
 		double 	error;
 		void  	partitionateInterval(const bool &saveLog = 0);
 		double 	partitionatedIntervalIntegralSolution(double begin,double end,const bool &saveLog = 0);
+		void	generateHermitePolinom();
+		double  getHermitePolinom(double x);
 
 	public:
 		Integral();
@@ -42,7 +44,7 @@ class Integral{
 		double 	getResult();
 		double 	getError();
 		void 	readFunction(string &f);
-
+		void	solveWithGaussHermite(const bool &saveLog = 0);
 		void 	solveWithTrapeziumRule(const bool &saveLog = 0);
 		void 	solveIntegration();
 		void 	showSolution();
