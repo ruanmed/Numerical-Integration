@@ -13,32 +13,34 @@ double	Integral::getFunction(double * val)
 void  Trapezium::partitionateInterval(const bool &saveLog){
 	double amp=(getUpperLimit()-getBottomLimit()),passo;
 	int c,divisoes;
-	if(amp<1)
+	if(amp<=1)
 		divisoes=1;
 	else
-	if(amp<10)
+	if(amp<=10)
 		divisoes=100000;
 	else
-	if(amp<100)
+	if(amp<=100)
 		divisoes=1000000;
 	else
-	if(amp<1000)
+	if(amp<=1000)
 		divisoes=10000000;
 	else
-		divisoes=(int)(amp/0.1);
+		divisoes=(int)(amp/0.001);
 
 	passo=amp/divisoes;
 	setError(divisoes*E);//Tratanto acumulo dos erros pela utilização da soma de integrais
 
-	for(c=0;(c+1)*passo<getUpperLimit();c++)
+	for(c=0;getBottomLimit()+(c+1)*passo<getUpperLimit();c++)
 	{
-		setResult(getResult()+partitionatedIntervalIntegralSolution(c*passo,(c+1)*passo));
+		setResult(getResult()+partitionatedIntervalIntegralSolution(getBottomLimit()+c*passo,getBottomLimit()+(c+1)*passo));
 		if (saveLog)
 			file << setprecision(6) << "Intervalo: " << c*passo << " a " << (c+1)*passo << endl <<
 				setprecision(6) << "Integral ate aqui: " << getResult() << endl;
 	}
-	c--;
-	setResult(getResult()+partitionatedIntervalIntegralSolution(c*passo,getUpperLimit()));
+
+	if(c>0)
+		c--;
+	setResult(getResult()+partitionatedIntervalIntegralSolution(getBottomLimit()+c*passo,getUpperLimit()));
 	if (saveLog)
 		file<< setprecision(6) << "Intervalo: " << c*passo << " a " << getUpperLimit() << endl <<setprecision(6) << "Integral ate aqui: " << getResult() << endl;
 }
@@ -47,7 +49,6 @@ double Trapezium::partitionatedIntervalIntegralSolution(double begin,double end,
 	double A,Aa,dx=end-begin;
 	long long int c,i=1;//c - Contador e i = n° de intervalos
 	double temp[] = { 0 };
-	dx=end-begin;
 	A=((getFunction(&begin)+getFunction(&end))*dx)/2;
 	do{
 		for(c=1,Aa=A,dx/=2,A=0,i<<=1; c<i && dx > E; c+=2){
@@ -69,6 +70,7 @@ double Trapezium::partitionatedIntervalIntegralSolution(double begin,double end,
 Integral::Integral(){
 	setLimits(0,0);
 	setResult(0);
+	setError(0);
 	file.open("log.txt");
 }
 
