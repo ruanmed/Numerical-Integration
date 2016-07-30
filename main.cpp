@@ -25,13 +25,16 @@ int main(){
 	{
 		case 1:
 			Questao_1();
+			pauseclear;
 			break;
 		case 3:
 			Questao_3();
+			pauseclear;
 			break;
 
 		default:
 			cout<<"Opção invalida"<<endl;
+			pauseclear;
 			break;
 	}
 }
@@ -74,11 +77,15 @@ int Questao_1()
 		integral.solveIntegration(op);
 		integral.showSolution();
 
-		pauseclear;
 		return 0;
 }
 int Questao_3()
 {
 	GaussHermite integral;
+
+	integral.printHermitePolinoms();
+	pause;
+	integral.solveIntegration(true);
+
 
 }

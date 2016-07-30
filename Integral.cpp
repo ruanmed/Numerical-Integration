@@ -6,6 +6,8 @@
  */
 #include "Integral.hpp"
 double E=1e-7;
+#define pause cout<<"Aperte enter para continuar."<<endl; getchar();
+#define pauseclear   pause system("clear || CLS");
 double	Integral::getFunction(double * val)
 {
 	return function.Eval(val);
@@ -148,22 +150,25 @@ void Integral::showSolution(){
 			" até " << setprecision(6) << getUpperLimit() << " eh: " << setprecision(6) <<
 			getResult() << endl<<"O erro associado é de: "<<getError()<<endl;
 }
-void	GaussHermite::generateHermitePolinom(int order)
+void	GaussHermite::generateHermitePolinoms(int order)
 {
-	for(int c=0;c<order;c++)
+	for(int c=ordemPoli;c<order;c++)
 	{
 		int *aux = new int[(c+2)];
 
 		for(int c1=0;c1<(c+2);c1++)
 			aux[c1]=0;
 
-		for(int c1=0;c1<ordemPoli;c1++)
+		//Debug
+		//cout<<"ordemPoli: "<<ordemPoli<<" OrdemPoli2: "<<ordemPoli2<<endl;
+
+		for(int c1=0;c1<=ordemPoli;c1++)
 		{
 			aux[c1+1]+=2*poli[c1];
 		}
-		for(int c2=0;c2<ordemPoli2;c2++)
+		for(int c2=0;c2<=ordemPoli2;c2++)
 		{
-			aux[c2]-=2*(ordemPoli-1)*poli2[c2];
+			aux[c2]-=2*(ordemPoli)*poli2[c2];
 		}
 
 		free(poli2);
@@ -178,7 +183,7 @@ void	GaussHermite::generateHermitePolinom(int order)
 		cout<<endl;
 
 		getchar();
-		*/
+		//*/
 	}
 
 }
@@ -196,8 +201,8 @@ GaussHermite::GaussHermite()
 	poli2 = new int[1];
 	poli[0]=1;
 	poli2[0]=0;
-	ordemPoli=1;
-	ordemPoli2=1;
+	ordemPoli=0;
+	ordemPoli2=0;
 }
 GaussHermite::~GaussHermite()
 {
@@ -206,7 +211,39 @@ GaussHermite::~GaussHermite()
 	if(poli2)
 		free(poli2);
 }
-void 	GaussHermite::solveIntegration(const bool &saveLog)
-{
+void	GaussHermite::printHermitePolinoms()
+{	int c;
+	bool something;
 
+	cout<<"P("<<ordemPoli<<"): ";
+	for(c=ordemPoli,something=false ;c>-1; c--)
+	{
+		if(poli[c])
+		{
+			something=true;
+			cout<<poli[c]<<"*"<<"x^"<<c<<" ";
+		}
+	}
+
+	cout<<endl;
+	cout<<"P("<<ordemPoli2<<"): ";
+	for(c=ordemPoli2,something=false;c>-1;c--)
+	{
+		if(poli2[c])
+		{
+			something=true;
+			cout<<poli2[c]<<"*"<<"x^"<<c<<" ";
+		}
+	}
+	cout<<endl;
+
+}
+void 	GaussHermite::solveIntegration(const bool &saveLog)
+{	int c=1;
+	while(1)
+	{
+		generateHermitePolinoms(c++);
+		printHermitePolinoms();
+		pause;
+	}
 }
