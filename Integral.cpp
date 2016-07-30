@@ -6,9 +6,12 @@
  */
 #include "Integral.hpp"
 double E=1e-7;
-
-void  Integral::partitionateInterval(const bool &saveLog){
-	double amp=(upperLimit-bottomLimit),passo;
+double	Integral::getFunction(double * val)
+{
+	return function.Eval(val);
+}
+void  Trapezium::partitionateInterval(const bool &saveLog){
+	double amp=(getUpperLimit()-getBottomLimit()),passo;
 	int c,divisoes;
 	if(amp<1)
 		divisoes=1;
@@ -27,7 +30,7 @@ void  Integral::partitionateInterval(const bool &saveLog){
 	passo=amp/divisoes;
 	setError(divisoes*E);//Tratanto acumulo dos erros pela utilização da soma de integrais
 
-	for(c=0;(c+1)*passo<upperLimit;c++)
+	for(c=0;(c+1)*passo<getUpperLimit();c++)
 	{
 		setResult(getResult()+partitionatedIntervalIntegralSolution(c*passo,(c+1)*passo));
 		if (saveLog)
@@ -35,22 +38,21 @@ void  Integral::partitionateInterval(const bool &saveLog){
 				setprecision(6) << "Integral ate aqui: " << getResult() << endl;
 	}
 	c--;
-	setResult(getResult()+partitionatedIntervalIntegralSolution(c*passo,upperLimit));
+	setResult(getResult()+partitionatedIntervalIntegralSolution(c*passo,getUpperLimit()));
 	if (saveLog)
-		file << setprecision(6) << "Intervalo: " << c*passo << " a " << upperLimit << endl <<
-				setprecision(6) << "Integral ate aqui: " << getResult() << endl;
+		file<< setprecision(6) << "Intervalo: " << c*passo << " a " << getUpperLimit() << endl <<setprecision(6) << "Integral ate aqui: " << getResult() << endl;
 }
 
-double Integral::partitionatedIntervalIntegralSolution(double begin,double end,const bool &saveLog){
+double Trapezium::partitionatedIntervalIntegralSolution(double begin,double end,const bool &saveLog){
 	double A,Aa,dx=end-begin;
 	long long int c,i=1;//c - Contador e i = n° de intervalos
 	double temp[] = { 0 };
 	dx=end-begin;
-	A=((function.Eval(&begin)+function.Eval(&end))*dx)/2;
+	A=((getFunction(&begin)+getFunction(&end))*dx)/2;
 	do{
 		for(c=1,Aa=A,dx/=2,A=0,i<<=1; c<i && dx > E; c+=2){
 			temp[0] = (c*dx)+begin;
-			A+=function.Eval(temp);
+			A+=getFunction(temp);
 		}
 
 		A*=dx;
@@ -126,16 +128,12 @@ void Integral::readFunction(string &f){
 	}
 }
 
-void Integral::solveWithTrapeziumRule(const bool &saveLog){
+void Trapezium::solveIntegration(const bool &saveLog)
+{
 	if (getUpperLimit() == getBottomLimit())
-		setResult(0);
-	else
-		partitionateInterval(saveLog);
-
-}
-
-void Integral::solveIntegration(){
-
+			setResult(0);
+		else
+			partitionateInterval(saveLog);
 }
 
 void Integral::showSolution(){
@@ -147,4 +145,71 @@ void Integral::showSolution(){
 			" , no intervalo de " << getBottomLimit() <<
 			" até " << setprecision(6) << getUpperLimit() << " eh: " << setprecision(6) <<
 			getResult() << endl<<"O erro associado é de: "<<getError()<<endl;
+}
+void	GaussHermite::generateHermitePolinom(int order)
+{
+
+
+}
+int GaussHermite::recursivGeneration(int order)
+{
+	if(order==0)
+		return 1;
+	else
+	if(order<0)
+		return 0;
+	else
+	{
+		poli[order-1] = 2*recursivGeneration(order-1);
+		poli[order-1] = 2*order*recursivGeneration(order-1);
+		return 0;
+	}
+}
+double  GaussHermite::getHermitePolinom(double x)
+{
+	double val;
+
+
+	return val;
+}
+void GaussHermite::allocPoli(int order)
+{
+	if(order>0)
+	{
+		if(order==1)
+		{
+			if(poli)
+				free(poli);
+
+			poli = new int[2];
+		}
+		else
+		{
+			poli =( int* )realloc(poli,sizeof(int)*order);
+
+		}
+
+		if(!poli)
+		{
+			cout<<"Erro ao alocar"<<endl;
+			exit(1);
+		}
+	}
+	else
+	{
+		cout<<"Tamanho Invalido"<<endl;
+	}
+}
+GaussHermite::GaussHermite()
+{
+	poli=NULL;
+}
+GaussHermite::~GaussHermite()
+{
+	if(poli)
+		free(poli);
+}
+void 	GaussHermite::solveIntegration(const bool &saveLog)
+{
+
 }

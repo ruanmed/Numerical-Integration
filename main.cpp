@@ -16,7 +16,7 @@ int main(){
 	bool op;
 	string arquivo;
 	string ler;
-	Integral integral;
+	Trapezium integral;
 	
 	cout << "Integração Numérica usando Regra do Trapézio" << endl;
 	cout << "Digite a função para integração abaixo." << endl;
@@ -45,7 +45,7 @@ int main(){
 
 	cout << "Processando..." << endl;
 
-	integral.solveWithTrapeziumRule(op);
+	integral.solveIntegration(op);
 	integral.showSolution();
 
 	pauseclear;

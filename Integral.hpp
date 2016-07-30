@@ -20,20 +20,15 @@ using namespace std;
 class Integral{
 	private:
 		FunctionParser function;
-		ofstream file;
 		string 	sfunction;
 		double 	bottomLimit;
 		double 	upperLimit;
 		double 	result;
 		double 	error;
-		void  	partitionateInterval(const bool &saveLog = 0);
-		double 	partitionatedIntervalIntegralSolution(double begin,double end,const bool &saveLog = 0);
-		void	generateHermitePolinom();
-		double  getHermitePolinom(double x);
-
 	public:
+		ofstream file;
 		Integral();
-		~Integral();
+		virtual	~Integral();
 		void 	setBottomLimit(const double &newBottomLimit);
 		void 	setUpperLimit(const double &newUpperLimit);
 		void 	setLimits(const double &a, const double &b);
@@ -44,10 +39,30 @@ class Integral{
 		double 	getResult();
 		double 	getError();
 		void 	readFunction(string &f);
-		void	solveWithGaussHermite(const bool &saveLog = 0);
-		void 	solveWithTrapeziumRule(const bool &saveLog = 0);
-		void 	solveIntegration();
+		double	getFunction(double * val);
+		virtual void 	solveIntegration(const bool &saveLog) = 0;
 		void 	showSolution();
+};
+class Trapezium: public Integral
+{
+	private:
+		void  	partitionateInterval(const bool &saveLog = 0);
+		double 	partitionatedIntervalIntegralSolution(double begin,double end,const bool &saveLog = 0);
+	public:
+		void 	solveIntegration(const bool &saveLog);
+};
+class GaussHermite: public Integral
+{
+	private:
+		int	*poli;
+		void	generateHermitePolinom(int order);
+		int recursivGeneration(int order);
+		double  getHermitePolinom(double x);
+		void allocPoli(int order);
+	public:
+		GaussHermite();
+		~GaussHermite();
+		void 	solveIntegration(const bool &saveLog);
 };
 
 
