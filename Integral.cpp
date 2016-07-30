@@ -182,31 +182,14 @@ void	GaussHermite::generateHermitePolinom(int order)
 	}
 
 }
-int GaussHermite::recursivGeneration(int order)
-{
-	if(order==0)
-		return 1;
-	else
-	if(order<0)
-		return 0;
-	else
-	{
-		poli[order-1] = 2*recursivGeneration(order-1);
-		poli[order-1] = 2*order*recursivGeneration(order-1);
-		return 0;
-	}
-}
 double  GaussHermite::getHermitePolinom(double x)
 {
 	double val;
-
+	//usar parenteses encaixados...
 
 	return val;
 }
-void GaussHermite::allocPoli(int order,bool seletor)
-{
 
-}
 GaussHermite::GaussHermite()
 {
 	poli = new int[1];

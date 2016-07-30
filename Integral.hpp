@@ -58,12 +58,9 @@ class GaussHermite: public Integral
 	private:
 		int	*poli,*poli2;
 		int ordemPoli,ordemPoli2;
-		int recursivGeneration(int order);
 		void	generateHermitePolinom(int order);
 		double  getHermitePolinom(double x);
-		void allocPoli(int order,bool seletor);
 	public:
-
 		GaussHermite();
 		~GaussHermite();
 		void 	solveIntegration(const bool &saveLog);
