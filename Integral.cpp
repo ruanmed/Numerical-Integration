@@ -150,7 +150,36 @@ void Integral::showSolution(){
 }
 void	GaussHermite::generateHermitePolinom(int order)
 {
+	for(int c=0;c<order;c++)
+	{
+		int *aux = new int[(c+2)];
 
+		for(int c1=0;c1<(c+2);c1++)
+			aux[c1]=0;
+
+		for(int c1=0;c1<ordemPoli;c1++)
+		{
+			aux[c1+1]+=2*poli[c1];
+		}
+		for(int c2=0;c2<ordemPoli2;c2++)
+		{
+			aux[c2]-=2*(ordemPoli-1)*poli2[c2];
+		}
+
+		free(poli2);
+		poli2=poli;
+		poli=aux;
+		ordemPoli2=ordemPoli;
+		ordemPoli++;
+
+		/*//Debug
+		for(int c1=(c+1);c1>-1;c1--)
+			cout<<aux[c1]<<" ";
+		cout<<endl;
+
+		getchar();
+		*/
+	}
 
 }
 int GaussHermite::recursivGeneration(int order)
@@ -174,42 +203,25 @@ double  GaussHermite::getHermitePolinom(double x)
 
 	return val;
 }
-void GaussHermite::allocPoli(int order)
+void GaussHermite::allocPoli(int order,bool seletor)
 {
-	if(order>0)
-	{
-		if(order==1)
-		{
-			if(poli)
-				free(poli);
 
-			poli = new int[2];
-		}
-		else
-		{
-			poli =( int* )realloc(poli,sizeof(int)*order);
-
-		}
-
-		if(!poli)
-		{
-			cout<<"Erro ao alocar"<<endl;
-			exit(1);
-		}
-	}
-	else
-	{
-		cout<<"Tamanho Invalido"<<endl;
-	}
 }
 GaussHermite::GaussHermite()
 {
-	poli=NULL;
+	poli = new int[1];
+	poli2 = new int[1];
+	poli[0]=1;
+	poli2[0]=0;
+	ordemPoli=1;
+	ordemPoli2=1;
 }
 GaussHermite::~GaussHermite()
 {
 	if(poli)
 		free(poli);
+	if(poli2)
+		free(poli2);
 }
 void 	GaussHermite::solveIntegration(const bool &saveLog)
 {

@@ -17,6 +17,8 @@
 #include "fparser.hh"
 using namespace std;
 
+
+
 class Integral{
 	private:
 		FunctionParser function;
@@ -54,12 +56,14 @@ class Trapezium: public Integral
 class GaussHermite: public Integral
 {
 	private:
-		int	*poli;
-		void	generateHermitePolinom(int order);
+		int	*poli,*poli2;
+		int ordemPoli,ordemPoli2;
 		int recursivGeneration(int order);
+		void	generateHermitePolinom(int order);
 		double  getHermitePolinom(double x);
-		void allocPoli(int order);
+		void allocPoli(int order,bool seletor);
 	public:
+
 		GaussHermite();
 		~GaussHermite();
 		void 	solveIntegration(const bool &saveLog);
