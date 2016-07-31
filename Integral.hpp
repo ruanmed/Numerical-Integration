@@ -42,17 +42,27 @@ class Integral{
 		double 	getError();
 		void 	readFunction(string &f);
 		double	getFunction(double * val);
-		virtual void 	solveIntegration(const bool &saveLog) = 0;
+		double	getFunction(const double &val);
+		virtual void 	solveIntegration(const bool &saveLog = false) = 0;
 		void 	showSolution();
 };
 class Trapezium: public Integral
 {
 	private:
-		void  	partitionateInterval(const bool &saveLog = 0);
-		double 	partitionatedIntervalIntegralSolution(double begin,double end,const bool &saveLog = 0);
+		void  	partitionateInterval(const bool &saveLog = false);
+		double 	partitionatedIntervalIntegralSolution(double begin,double end,const bool &saveLog = false);
 	public:
-		void 	solveIntegration(const bool &saveLog);
+		void 	solveIntegration(const bool &saveLog = false);
 };
+
+class Boole: public Integral
+{
+	private:
+		void  	partitionateInterval(const bool &saveLog = false);
+	public:
+		void 	solveIntegration(const bool &saveLog = false);
+};
+
 class GaussHermite: public Integral
 {
 	private:
@@ -80,7 +90,7 @@ class GaussHermite: public Integral
 		void	setNumRoots(int num);
 		void	printPolinomsRoots();
 		void	printHermitePolinoms();
-		void 	solveIntegration(const bool &saveLog);
+		void 	solveIntegration(const bool &saveLog = false);
 };
 
 
