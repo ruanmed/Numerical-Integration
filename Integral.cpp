@@ -1,13 +1,8 @@
-/*
- * 	Integral.cpp
- *
- *  Created on: 28 de jul de 2016
- *      Author: Ruan
- */
 #include "Integral.hpp"
 double E=1e-7;
 #define pause cout<<"Aperte enter para continuar."<<endl; getchar();
 #define pauseclear   pause system("clear || CLS");
+
 double	Integral::getFunction(double * val)
 {
 	return function.Eval(val);
@@ -18,90 +13,6 @@ double	Integral::getFunction(const double &val){
 	t[0] = val;
 	return function.Eval(t);
 }
-
-Integral::Integral(){
-	setLimits(0,0);
-	setResult(0);
-	setError(0);
-	file.open("log.txt");
-}
-
-Integral::~Integral(){
-	file.close();
-}
-
-void Integral::setBottomLimit(const double &newBottomLimit){
-	bottomLimit = newBottomLimit;
-}
-
-void Integral::setUpperLimit(const double &newUpperLimit){
-	upperLimit = newUpperLimit;
-}
-
-void Integral::setLimits(const double &a, const double &b){
-	if (a < b){
-		setBottomLimit(a);
-		setUpperLimit(b);
-	}
-	else {
-		setBottomLimit(b);
-		setUpperLimit(a);
-	}
-}
-
-void Integral::setResult(const double &newResult){
-	result = newResult;
-}
-void Integral::setError(const double &newError){
-	error = newError;
-}
-
-double Integral::getBottomLimit(){
-	return bottomLimit;
-}
-
-double Integral::getUpperLimit(){
-	return upperLimit;
-}
-
-double Integral::getResult(){
-	return result;
-}
-double Integral::getError(){
-	return error;
-}
-
-void Integral::readFunction(string &f){
-	sfunction = f;
-	while (true){
-		int res = function.Parse(f, "x");
-		if (res < 0)
-			break;
-		std::cout << std::string(res+7, ' ') << "^\n"
-					<< function.ErrorMsg() << "\n\n";
-	}
-}
-
-void Integral::showSolution(){
-	file << fixed << setprecision(7) << "A solucao da integral de f(x) = " << sfunction <<
-			" , no intervalo de " << getBottomLimit() <<
-			" até " << setprecision(7) << getUpperLimit() << " eh: " << setprecision(7) <<
-			getResult() << endl<<"O erro associado é de: "<< setprecision(7) << getError()<<endl;
-	cout << fixed << setprecision(7)<< "A solucao da integral de f(x) = " << sfunction <<
-			" , no intervalo de " << getBottomLimit() <<
-			" até " << setprecision(7) << getUpperLimit() << " eh: " << setprecision(7) <<
-			getResult() << endl<<"O erro associado é de: "<< setprecision(7) << getError()<<endl;
-}
-
-void Trapezium::solveIntegration(const bool &saveLog)
-{
-	if (getUpperLimit() == getBottomLimit())
-			setResult(0);
-	else
-		partitionateInterval(saveLog);
-}
-
-
 
 void  Trapezium::partitionateInterval(const bool &saveLog){
 	double amp=(getUpperLimit()-getBottomLimit()),passo;
@@ -154,8 +65,8 @@ double Trapezium::partitionatedIntervalIntegralSolution(double begin,double end,
 	}while(fabs(A-Aa)>E);
 
 	if (saveLog)
-		file << setprecision(6) << "\n\tDivisão em " << i << " intervalos de " << dx <<
-				" -- valor da integral = " << setprecision(6) << A << "\t" << endl;
+	file << setprecision(6) << "\n\tDivisao em " << i << " intervalos de " << dx <<
+			" -- valor da integral = " << setprecision(6) << A << "\t" << endl;
 
 	return A;
 }
@@ -171,7 +82,7 @@ void 	Boole::solveIntegration(const bool &saveLog){
 		double c;
 		do {
 			aux = getResult();
-			divisoes *=n;
+			divisoes = n*4;
 			dx=(getUpperLimit()-getBottomLimit())/divisoes;
 
 			setResult(7*getFunction(getUpperLimit())+7*getFunction(getBottomLimit()));
@@ -202,27 +113,109 @@ void 	Boole::solveIntegration(const bool &saveLog){
 	}
 }
 
+Integral::Integral(){
+	setLimits(0,0);
+	setResult(0);
+	setError(0);
+	file.open("log.txt");
+}
 
+Integral::~Integral(){
+	file.close();
+}
+
+void Integral::setBottomLimit(const double &newBottomLimit){
+	bottomLimit = newBottomLimit;
+}
+
+void Integral::setUpperLimit(const double &newUpperLimit){
+	upperLimit = newUpperLimit;
+}
+
+void Integral::setLimits(const double &a, const double &b){
+	if (a < b){
+		setBottomLimit(a);
+		setUpperLimit(b);
+	}
+	else {
+		setBottomLimit(b);
+		setUpperLimit(a);
+	}
+}
+
+void Integral::setResult(const double &newResult){
+	result = newResult;
+}
+void Integral::setError(const double &newError){
+	error = newError;
+}
+
+double Integral::getBottomLimit(){
+	return bottomLimit;
+}
+
+double Integral::getUpperLimit(){
+	return upperLimit;
+}
+
+double Integral::getResult(){
+	return result;
+}
+double	Integral::getError(){
+	return error;
+}
+void	Integral::setFunction(string &f)
+{
+	sfunction = f;
+}
+string	Integral::getFunction()
+{
+	return sfunction;
+}
+void Integral::readFunction(string &f){
+	setFunction(f);
+	while (true){
+		int res = function.Parse(f, "x");
+		if (res < 0)
+			break;
+		std::cout << std::string(res+7, ' ') << "^\n"
+					<< function.ErrorMsg() << "\n\n";
+	}
+}
+
+void Trapezium::solveIntegration(const bool &saveLog)
+{
+	if (getUpperLimit() == getBottomLimit())
+			setResult(0);
+		else
+			partitionateInterval(saveLog);
+}
+
+void Integral::showSolution(){
+	file << setprecision(6)<< "A solucao da integral de f(x) = " << getFunction() <<
+			" , no intervalo de " << getBottomLimit() <<
+			" até " << setprecision(6) << getUpperLimit() << " eh: " << setprecision(6) <<
+			getResult() << endl<<"O erro associado é de: "<<getError()<<endl;
+	cout << setprecision(6)<< "A solucao da integral de f(x) = " << getFunction() <<
+			" , no intervalo de " << getBottomLimit() <<
+			" até " << setprecision(6) << getUpperLimit() << " eh: " << setprecision(6) <<
+			getResult() << endl<<"O erro associado é de: "<<getError()<<endl;
+}
 void	GaussHermite::generateHermitePolinoms(int order)
 {
 	for(int c=getOrderPoli();c<order;c++)
 	{
 		int *aux = new int[(c+2)];
+		double maior;
 
 		for(int c1=0;c1<(c+2);c1++)
 			aux[c1]=0;
 
-		//Debug
-		//cout<<"orderPoli: "<<getOrderPoli()<<" orderPoli2: "<<getOrderPoli2()<<endl;
-
 		for(int c1=0;c1<=getOrderPoli();c1++)
-		{
 			aux[c1+1]+=2*poli[c1];
-		}
+
 		for(int c2=0;c2<=getOrderPoli2();c2++)
-		{
 			aux[c2]-=2*(orderPoli)*poli2[c2];
-		}
 
 		free(poli2);
 		poli2=poli;
@@ -230,17 +223,17 @@ void	GaussHermite::generateHermitePolinoms(int order)
 		setOrderPoli2(getOrderPoli());
 		setOrderPoli(getOrderPoli()+1);
 
-		/*//Debug
-		for(int c1=(c+1);c1>-1;c1--)
-			cout<<aux[c1]<<" ";
-		cout<<endl;
+		for(int c1=0;c1<order-1;c1++)
+			if(!c1 || fabs(poli[c1])>maior)
+				maior=fabs(poli[c1]);
 
-		getchar();
-		//*/
+		R = (maior/poli[order])+1;
+
+
 	}
 
 }
-double  GaussHermite::getHermitePolinom(bool Switch,double x)
+double  GaussHermite::getHermitePolinom(bool Switch,double x)//Metodo dos parenteses encaixados de horner
 {	int c;
 	double value;
 
@@ -300,31 +293,36 @@ void	GaussHermite::allocRoots(int num)
 void	GaussHermite::generateRoots()
 {
 	int i;
-	double kick;
+	double kick,passo=0.1;
 
 	allocRoots(getOrderPoli());
 	setNumRoots(0);
-
-	for(i=0;i<getOrderPoli();i++)//Pelo pdf de edison seria getOrderPoli()-1, porém não faz sentido...
+	if(getOrderPoli()&1)//Order é impar?
 	{
-		if(i==0)
-			kick=sqrt(2.0*getOrderPoli()+1 - 1.85575*pow(2.0*getOrderPoli()+1,-0.16667));
-		else
-		if(i==1)
-			kick-=1.14*pow(getOrderPoli(),0.426)/kick;
-		else
-		if(i==2)
-			kick=1.86*kick-0.86*roots[0];
-		else
-		if(i==3)
-			kick=1.91*kick-0.91*roots[1];
-		else
-			kick=2.0*kick-roots[i-2];
-
-		roots[i]=newtonMethodPolinoms(kick);
+		roots[0]=0;
 		setNumRoots(getNumRoots()+1);
+	}
+
+	for(i=1;i*passo<=R && getNumRoots()<=getOrderPoli()/2;i++)
+	{
+		if((getHermitePolinom(true,i*passo)*getHermitePolinom(true,(i+1)*passo)) < 0)
+		{	kick = (((2*i+1)*passo)/2);
+			roots[getNumRoots()] = newtonMethodPolinoms(kick);
+			setNumRoots(getNumRoots()+1);
+		}
 
 	}
+
+	i = (getOrderPoli()&1)?1:0;
+
+	for(;getNumRoots()<=getOrderPoli();i++)//espelha as raizes pela origem
+	{
+		roots[getNumRoots()]=(-roots[i]);
+		setNumRoots(getNumRoots()+1);
+	}
+
+	setNumRoots(getNumRoots()-1);
+
 
 }
 GaussHermite::GaussHermite()
@@ -334,9 +332,11 @@ GaussHermite::GaussHermite()
 	roots = NULL;
 	poli[0]=1;
 	poli2[0]=0;
+	R=0;
 	orderPoli=0;
 	orderPoli2=0;
 	numRoots=0;
+	file<<"Solução pela Quadratura de Gauss-Hermite:"<<endl;
 }
 GaussHermite::~GaussHermite()
 {
@@ -369,7 +369,6 @@ void	GaussHermite::setNumRoots(int num)
 {
 	numRoots = num;
 }
-
 void	GaussHermite::printPolinomsRoots()
 {
 	cout<<"Roots: ";
@@ -377,7 +376,6 @@ void	GaussHermite::printPolinomsRoots()
 		cout<<roots[c]<<" ";
 	cout<<endl;
 }
-
 void	GaussHermite::printHermitePolinoms()
 {
 	int c;
@@ -395,26 +393,38 @@ void	GaussHermite::printHermitePolinoms()
 	cout<<endl;
 
 }
-void 	GaussHermite::solveIntegration(const bool &saveLog){
-	int c=2,fat=1;//O primeiro é pulado por ser trivial
+void 	GaussHermite::solveIntegration(const bool &saveLog)
+{	int c=2,fat=1;//O primeiro é pulado por ser trivial
 	double newResult,oldResult=0,weight;
 	newResult=getFunction(&oldResult)* 1.77245385090551;// 1.77245385090551 é o peso para P(1), que é constante e a raiz de P(1) é 0
+	setError(E);
 
-	while(fabs(newResult-oldResult)>E && c>14)//Fatorial estoura lindamente!
+	while((fabs(newResult-oldResult)>E && c<10) || c==2)//Fatorial estoura lindamente!
 	{
+		if(saveLog)
+			file<<"P("<<getOrderPoli()<<") gera a integral de valor:  "<<newResult<<endl;
 		oldResult=newResult;
 		newResult=0;
 		generateHermitePolinoms(c);
-		printHermitePolinoms();
 		generateRoots();
-		printPolinomsRoots();
 		fat*=c;
-		for(int c1=0,weight = ((2<<(c+1))*fat*1.77245385090551) ;c1<c; c1++)
+		for(int c1=0,weight = ((2<<(c))*fat*1.77245385090551) ;c1<c; c1++)
 			newResult+=((weight*getFunction(roots+c1))/(getHermitePolinomDerivative(roots[c1])*getHermitePolinomDerivative(roots[c1])));
-
-		pause;
 		c++;
-
-
 	}
+
+	if(saveLog)
+		file<<"P("<<getOrderPoli()<<") gera a integral de valor:  "<<newResult/2<<endl;
+	setResult(newResult);
+}
+void	GaussHermite::showSolution()
+{
+	string aux="e^(-x^2)*";
+
+	file << setprecision(6)<< "A solucao da integral de f(x) = " << aux+getFunction() <<
+				" , em toda extensão da reta dos reais eh: " << setprecision(6) <<
+				getResult() << endl<<"O erro associado é de: "<<getError()<<endl;
+		cout << setprecision(6)<< "A solucao da integral de f(x) = " << aux+getFunction() <<
+				" , em toda extensão da reta dos reais eh: " << setprecision(6) <<
+								getResult() << endl<<"O erro associado é de: "<<getError()<<endl;
 }

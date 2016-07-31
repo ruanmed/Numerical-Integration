@@ -1,10 +1,3 @@
-/*
- * Integral.hpp
- *
- *  Created on: 28 de jul de 2016
- *      Author: Ruan
- */
-
 #ifndef INTEGRAL_HPP_
 #define INTEGRAL_HPP_
 
@@ -40,25 +33,24 @@ class Integral{
 		double 	getUpperLimit();
 		double 	getResult();
 		double 	getError();
+		void	setFunction(string &f);
+		string	getFunction();
 		void 	readFunction(string &f);
 		double	getFunction(double * val);
 		double	getFunction(const double &val);
-		virtual void 	solveIntegration(const bool &saveLog = false) = 0;
+		virtual void 	solveIntegration(const bool &saveLog) = 0;
 		void 	showSolution();
 };
 class Trapezium: public Integral
 {
 	private:
-		void  	partitionateInterval(const bool &saveLog = false);
-		double 	partitionatedIntervalIntegralSolution(double begin,double end,const bool &saveLog = false);
+		void  	partitionateInterval(const bool &saveLog = 0);
+		double 	partitionatedIntervalIntegralSolution(double begin,double end,const bool &saveLog = 0);
 	public:
-		void 	solveIntegration(const bool &saveLog = false);
+		void 	solveIntegration(const bool &saveLog);
 };
 
-class Boole: public Integral
-{
-	private:
-		void  	partitionateInterval(const bool &saveLog = false);
+class Boole: public Integral{
 	public:
 		void 	solveIntegration(const bool &saveLog = false);
 };
@@ -69,6 +61,7 @@ class GaussHermite: public Integral
 		int	*poli;
 		int *poli2;
 		double *roots;
+		double R;
 		int orderPoli;
 		int orderPoli2;
 		int numRoots;
@@ -90,7 +83,8 @@ class GaussHermite: public Integral
 		void	setNumRoots(int num);
 		void	printPolinomsRoots();
 		void	printHermitePolinoms();
-		void 	solveIntegration(const bool &saveLog = false);
+		void 	solveIntegration(const bool &saveLog);
+		void	showSolution();
 };
 
 

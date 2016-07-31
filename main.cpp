@@ -7,6 +7,7 @@
 #include "Integral.hpp"
 #define pause cout<<"Aperte enter para continuar."<<endl; getchar();
 #define pauseclear   pause system("clear || CLS");
+
 using namespace std;
 void Problema_1();
 void Problema_2();
@@ -34,10 +35,9 @@ int main(){
 			Problema_3();
 			break;
 		default:
-			cout << "Opção inválida." << endl;
+			cout<<"Opção inválida."<<endl;
 			break;
 	}
-
 	pauseclear;
 
 	return 0;
@@ -45,43 +45,41 @@ int main(){
 
 void Problema_1()
 {
-	double a,b;
-	bool op;
-	string arquivo;
-	string ler;
-	Trapezium integral;
+		double a,b;
+		bool op;
+		string ler;
+		Trapezium integral;
 
-	cout << "Integração Numérica usando Regra do Trapézio" << endl;
-	cout << "Digite a função para integração abaixo." << endl;
-	cout << "f(x) = ";
-	getline(cin, ler);
-	if (cin.fail())
+		cout << "Integração Numérica usando Regra do Trapézio" << endl;
+		cout << "Digite a função para integração abaixo." << endl;
+		cout << "f(x) = ";
+		getline(cin, ler);
+		if (cin.fail())
+			return;
+		integral.readFunction(ler);
+
+		cout << "Digite os limites de integração [a,b] abaixo." << endl;
+		cout << "a: ";
+		cin >> a;
+		cout << endl;
+		cout << "b: ";
+		cin >> b;
+		cout << endl;
+		cout << "Deseja salvar um registro das divisões do programa?" <<
+				"(Isso afetará bastante o desempenho do programa)" << endl <<
+				"[1] Sim [0] Não" << endl;
+		cin >> op;
+		if (op)
+			cout << endl << "O registro de divisões do programa será salvo no arquivo log.txt"<<endl;
+		pauseclear;
+
+		integral.setLimits(a,b);
+
+		cout << "Processando..." << endl;
+
+		integral.solveIntegration(op);
+		integral.showSolution();
 		return;
-	integral.readFunction(ler);
-
-	cout << "Digite os limites de integração [a,b] abaixo." << endl;
-	cout << "a: ";
-	cin >> a;
-	cout << endl;
-	cout << "b: ";
-	cin >> b;
-	cout << endl;
-	cout << "Deseja salvar um registro das divisões do programa?" <<
-			"(Isso afetará bastante o desempenho do programa)" << endl <<
-			"[1] Sim [0] Não" << endl;
-	cin >> op;
-	if (op)
-		cout << endl << "O registro de divisões do programa será salvo no arquivo log.txt"<<endl;
-	pauseclear;
-
-	integral.setLimits(a,b);
-
-	cout << "Processando..." << endl;
-
-	integral.solveIntegration(op);
-	integral.showSolution();
-
-	return;
 }
 
 void Problema_2(){
@@ -122,15 +120,37 @@ void Problema_2(){
 	integral.showSolution();
 
 	return;
-
-	return;
 }
 
 void Problema_3()
 {
 	GaussHermite integral;
-	//Ler a função sem e^(-x^2) e deixar isso explicito
-	integral.solveIntegration(true);
+	string ler;//Ler a função sem e^(-x^2) e deixar isso explicito//concaternar com e^(-x^2) depois..
+	bool op;
+
+
+	cout<<"Integracao numerica usando a quadratura de Gauss-Hermite"<<endl;
+	cout<<"Digite uma função que multiplicada por e^(-x^2) no intervalo de menos infinito a mais infinito tem  integral convergente"<<endl;
+	cout << "f(x) = ";
+
+	getline(cin, ler);
+	if (cin.fail())
+		return;
+
+	integral.readFunction(ler);
+
+	cout << "Deseja salvar um registro da expansao dos polinomios do programa?" <<"(Isso afetará bastante o desempenho do programa)" << endl <<"[1] Sim [0] Não" << endl;
+	cin >> op;
+	getchar();
+	if (op)
+		cout << endl << "O registro de divisões do programa será salvo no arquivo log.txt"<<endl;
+	pauseclear;
+
+	cout << "Processando..." << endl;
+
+	integral.solveIntegration(op);
+	pauseclear;
+	integral.showSolution();
 
 
 	return;
