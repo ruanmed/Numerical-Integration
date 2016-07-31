@@ -155,21 +155,16 @@ void	GaussHermite::generateHermitePolinoms(int order)
 	for(int c=getOrderPoli();c<order;c++)
 	{
 		int *aux = new int[(c+2)];
+		double maior;
 
 		for(int c1=0;c1<(c+2);c1++)
 			aux[c1]=0;
 
-		//Debug
-		//cout<<"orderPoli: "<<getOrderPoli()<<" orderPoli2: "<<getOrderPoli2()<<endl;
-
 		for(int c1=0;c1<=getOrderPoli();c1++)
-		{
 			aux[c1+1]+=2*poli[c1];
-		}
+
 		for(int c2=0;c2<=getOrderPoli2();c2++)
-		{
 			aux[c2]-=2*(orderPoli)*poli2[c2];
-		}
 
 		free(poli2);
 		poli2=poli;
@@ -177,17 +172,17 @@ void	GaussHermite::generateHermitePolinoms(int order)
 		setOrderPoli2(getOrderPoli());
 		setOrderPoli(getOrderPoli()+1);
 
-		/*//Debug
-		for(int c1=(c+1);c1>-1;c1--)
-			cout<<aux[c1]<<" ";
-		cout<<endl;
+		for(int c1=0;c1<order-1;c1++)
+			if(!c1 || fabs(poli[c1])>maior)
+				maior=fabs(poli[c1]);
 
-		getchar();
-		//*/
+		R = (maior/poli[order])+1;
+
+
 	}
 
 }
-double  GaussHermite::getHermitePolinom(bool Switch,double x)
+double  GaussHermite::getHermitePolinom(bool Switch,double x)//Metodo dos parenteses encaixados de horner
 {	int c;
 	double value;
 
@@ -247,31 +242,36 @@ void	GaussHermite::allocRoots(int num)
 void	GaussHermite::generateRoots()
 {
 	int i;
-	double kick;
+	double kick,passo=0.1;
 
 	allocRoots(getOrderPoli());
 	setNumRoots(0);
-
-	for(i=0;i<getOrderPoli();i++)//Pelo pdf de edison seria getOrderPoli()-1, porém não faz sentido...
+	if(getOrderPoli()&1)//Order é impar?
 	{
-		if(i==0)
-			kick=sqrt(2.0*getOrderPoli()+1 - 1.85575*pow(2.0*getOrderPoli()+1,-0.16667));
-		else
-		if(i==1)
-			kick-=1.14*pow(getOrderPoli(),0.426)/kick;
-		else
-		if(i==2)
-			kick=1.86*kick-0.86*roots[0];
-		else
-		if(i==3)
-			kick=1.91*kick-0.91*roots[1];
-		else
-			kick=2.0*kick-roots[i-2];
-
-		roots[i]=newtonMethodPolinoms(kick);
+		roots[0]=0;
 		setNumRoots(getNumRoots()+1);
+	}
+
+	for(i=1;i*passo<=R && getNumRoots()<=getOrderPoli()/2;i++)
+	{
+		if((getHermitePolinom(true,i*passo)*getHermitePolinom(true,(i+1)*passo)) < 0)
+		{	kick = (((2*i+1)*passo)/2);
+			roots[getNumRoots()] = newtonMethodPolinoms(kick);
+			setNumRoots(getNumRoots()+1);
+		}
 
 	}
+
+	i = (getOrderPoli()&1)?1:0;
+
+	for(;getNumRoots()<=getOrderPoli();i++)//espelha as raizes pela origem
+	{
+		roots[getNumRoots()]=(-roots[i]);
+		setNumRoots(getNumRoots()+1);
+	}
+
+	setNumRoots(getNumRoots()-1);
+
 
 }
 GaussHermite::GaussHermite()
@@ -281,6 +281,7 @@ GaussHermite::GaussHermite()
 	roots = NULL;
 	poli[0]=1;
 	poli2[0]=0;
+	R=0;
 	orderPoli=0;
 	orderPoli2=0;
 	numRoots=0;
@@ -345,21 +346,19 @@ void 	GaussHermite::solveIntegration(const bool &saveLog)
 	double newResult,oldResult=0,weight;
 	newResult=getFunction(&oldResult)* 1.77245385090551;// 1.77245385090551 é o peso para P(1), que é constante e a raiz de P(1) é 0
 
-	while(fabs(newResult-oldResult)>E && c>14)//Fatorial estoura lindamente!
+	while((fabs(newResult-oldResult)>E && c<10) || c==2)//Fatorial estoura lindamente!
 	{
 		oldResult=newResult;
 		newResult=0;
 		generateHermitePolinoms(c);
-		printHermitePolinoms();
 		generateRoots();
-		printPolinomsRoots();
 		fat*=c;
 		for(int c1=0,weight = ((2<<(c+1))*fat*1.77245385090551) ;c1<c; c1++)
 			newResult+=((weight*getFunction(roots+c1))/(getHermitePolinomDerivative(roots[c1])*getHermitePolinomDerivative(roots[c1])));
-
-		pause;
 		c++;
 
 
 	}
+
+	setResult(newResult/2);
 }

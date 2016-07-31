@@ -41,9 +41,8 @@ int main(){
 
 int Questao_1()
 {
-	double a,b;
+		double a,b;
 		bool op;
-		string arquivo;
 		string ler;
 		Trapezium integral;
 
@@ -82,8 +81,22 @@ int Questao_1()
 int Questao_3()
 {
 	GaussHermite integral;
-	//Ler a função sem e^(-x^2) e deixar isso explicito
+	string ler;//Ler a função sem e^(-x^2) e deixar isso explicito
+	cout<<"Integracao numerica usando a quadratura de Gauss-Hermite"<<endl;
+	cout<<"Digite uma função que multiplicada por e^(-x^2) no intervalo de menos infinito a mais infinito tem  integral convergente"<<endl;
+	cout << "f(x) = ";
+	getline(cin, ler);
+	if (cin.fail())
+		return 0;
+	integral.readFunction(ler);
+
+
+
+
+
 	integral.solveIntegration(true);
+	integral.showSolution();
+	pause;
 
 
 }

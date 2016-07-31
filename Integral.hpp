@@ -59,6 +59,7 @@ class GaussHermite: public Integral
 		int	*poli;
 		int *poli2;
 		double *roots;
+		double R;
 		int orderPoli;
 		int orderPoli2;
 		int numRoots;
