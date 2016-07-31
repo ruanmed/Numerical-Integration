@@ -40,6 +40,8 @@ class Integral{
 		double 	getUpperLimit();
 		double 	getResult();
 		double 	getError();
+		void	setFunction(string &f);
+		string	getFunction();
 		void 	readFunction(string &f);
 		double	getFunction(double * val);
 		virtual void 	solveIntegration(const bool &saveLog) = 0;
@@ -82,6 +84,7 @@ class GaussHermite: public Integral
 		void	printPolinomsRoots();
 		void	printHermitePolinoms();
 		void 	solveIntegration(const bool &saveLog);
+		void	showSolution();
 };
 
 

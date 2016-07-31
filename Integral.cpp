@@ -117,12 +117,19 @@ double Integral::getUpperLimit(){
 double Integral::getResult(){
 	return result;
 }
-double Integral::getError(){
+double	Integral::getError(){
 	return error;
 }
-
-void Integral::readFunction(string &f){
+void	Integral::setFunction(string &f)
+{
 	sfunction = f;
+}
+string	Integral::getFunction()
+{
+	return sfunction;
+}
+void Integral::readFunction(string &f){
+	setFunction(f);
 	while (true){
 		int res = function.Parse(f, "x");
 		if (res < 0)
@@ -141,11 +148,11 @@ void Trapezium::solveIntegration(const bool &saveLog)
 }
 
 void Integral::showSolution(){
-	file << setprecision(6)<< "A solucao da integral de f(x) = " << sfunction <<
+	file << setprecision(6)<< "A solucao da integral de f(x) = " << getFunction() <<
 			" , no intervalo de " << getBottomLimit() <<
 			" até " << setprecision(6) << getUpperLimit() << " eh: " << setprecision(6) <<
 			getResult() << endl<<"O erro associado é de: "<<getError()<<endl;
-	cout << setprecision(6)<< "A solucao da integral de f(x) = " << sfunction <<
+	cout << setprecision(6)<< "A solucao da integral de f(x) = " << getFunction() <<
 			" , no intervalo de " << getBottomLimit() <<
 			" até " << setprecision(6) << getUpperLimit() << " eh: " << setprecision(6) <<
 			getResult() << endl<<"O erro associado é de: "<<getError()<<endl;
@@ -285,6 +292,7 @@ GaussHermite::GaussHermite()
 	orderPoli=0;
 	orderPoli2=0;
 	numRoots=0;
+	file<<"Solução pela Quadratura de Gauss-Hermite:"<<endl;
 }
 GaussHermite::~GaussHermite()
 {
@@ -345,9 +353,12 @@ void 	GaussHermite::solveIntegration(const bool &saveLog)
 {	int c=2,fat=1;//O primeiro é pulado por ser trivial
 	double newResult,oldResult=0,weight;
 	newResult=getFunction(&oldResult)* 1.77245385090551;// 1.77245385090551 é o peso para P(1), que é constante e a raiz de P(1) é 0
+	setError(E);
 
 	while((fabs(newResult-oldResult)>E && c<10) || c==2)//Fatorial estoura lindamente!
 	{
+		if(saveLog)
+			file<<"P("<<getOrderPoli()<<") gera a integral de valor:  "<<newResult/2<<endl;
 		oldResult=newResult;
 		newResult=0;
 		generateHermitePolinoms(c);
@@ -356,9 +367,20 @@ void 	GaussHermite::solveIntegration(const bool &saveLog)
 		for(int c1=0,weight = ((2<<(c+1))*fat*1.77245385090551) ;c1<c; c1++)
 			newResult+=((weight*getFunction(roots+c1))/(getHermitePolinomDerivative(roots[c1])*getHermitePolinomDerivative(roots[c1])));
 		c++;
-
-
 	}
 
+	if(saveLog)
+		file<<"P("<<getOrderPoli()<<") gera a integral de valor:  "<<newResult/2<<endl;
 	setResult(newResult/2);
+}
+void	GaussHermite::showSolution()
+{
+	string aux="e^(-x^2)*";
+
+	file << setprecision(6)<< "A solucao da integral de f(x) = " << aux+getFunction() <<
+				" , em toda extensão da reta dos reais eh: " << setprecision(6) <<
+				getResult() << endl<<"O erro associado é de: "<<getError()<<endl;
+		cout << setprecision(6)<< "A solucao da integral de f(x) = " << aux+getFunction() <<
+				" , em toda extensão da reta dos reais eh: " << setprecision(6) <<
+								getResult() << endl<<"O erro associado é de: "<<getError()<<endl;
 }

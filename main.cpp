@@ -75,28 +75,38 @@ int Questao_1()
 
 		integral.solveIntegration(op);
 		integral.showSolution();
-
 		return 0;
 }
 int Questao_3()
 {
 	GaussHermite integral;
-	string ler;//Ler a função sem e^(-x^2) e deixar isso explicito
+	string ler;//Ler a função sem e^(-x^2) e deixar isso explicito//concaternar com e^(-x^2) depois..
+	bool op;
+
+
 	cout<<"Integracao numerica usando a quadratura de Gauss-Hermite"<<endl;
 	cout<<"Digite uma função que multiplicada por e^(-x^2) no intervalo de menos infinito a mais infinito tem  integral convergente"<<endl;
 	cout << "f(x) = ";
+
 	getline(cin, ler);
 	if (cin.fail())
 		return 0;
+
 	integral.readFunction(ler);
 
+	cout << "Deseja salvar um registro da expansao dos polinomios do programa?" <<"(Isso afetará bastante o desempenho do programa)" << endl <<"[1] Sim [0] Não" << endl;
+	cin >> op;
+	getchar();
+	if (op)
+		cout << endl << "O registro de divisões do programa será salvo no arquivo log.txt"<<endl;
+	pauseclear;
 
+	cout << "Processando..." << endl;
 
-
-
-	integral.solveIntegration(true);
+	integral.solveIntegration(op);
+	pauseclear;
 	integral.showSolution();
-	pause;
+	return 0;
 
 
 }
