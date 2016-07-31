@@ -152,7 +152,7 @@ void Integral::showSolution(){
 }
 void	GaussHermite::generateHermitePolinoms(int order)
 {
-	for(int c=ordemPoli;c<order;c++)
+	for(int c=getOrderPoli();c<order;c++)
 	{
 		int *aux = new int[(c+2)];
 
@@ -160,22 +160,22 @@ void	GaussHermite::generateHermitePolinoms(int order)
 			aux[c1]=0;
 
 		//Debug
-		//cout<<"ordemPoli: "<<ordemPoli<<" OrdemPoli2: "<<ordemPoli2<<endl;
+		//cout<<"orderPoli: "<<getOrderPoli()<<" orderPoli2: "<<getOrderPoli2()<<endl;
 
-		for(int c1=0;c1<=ordemPoli;c1++)
+		for(int c1=0;c1<=getOrderPoli();c1++)
 		{
 			aux[c1+1]+=2*poli[c1];
 		}
-		for(int c2=0;c2<=ordemPoli2;c2++)
+		for(int c2=0;c2<=getOrderPoli2();c2++)
 		{
-			aux[c2]-=2*(ordemPoli)*poli2[c2];
+			aux[c2]-=2*(orderPoli)*poli2[c2];
 		}
 
 		free(poli2);
 		poli2=poli;
 		poli=aux;
-		ordemPoli2=ordemPoli;
-		ordemPoli++;
+		setOrderPoli2(getOrderPoli());
+		setOrderPoli(getOrderPoli()+1);
 
 		/*//Debug
 		for(int c1=(c+1);c1>-1;c1--)
@@ -187,22 +187,103 @@ void	GaussHermite::generateHermitePolinoms(int order)
 	}
 
 }
-double  GaussHermite::getHermitePolinom(double x)
-{
-	double val;
-	//usar parenteses encaixados...
+double  GaussHermite::getHermitePolinom(bool Switch,double x)
+{	int c;
+	double value;
 
-	return val;
+	if(Switch)
+	{
+		for(c=getOrderPoli(),value=poli[c];c>0;c--)
+		{
+			value*=x;
+			value+=poli[c-1];
+		}
+	}
+	else
+	{
+		for(c=getOrderPoli2(),value=poli2[c];c>0;c--)
+		{
+			value*=x;
+			value+=poli2[c-1];
+		}
+	}
+	return value;
 }
+double  GaussHermite::getHermitePolinomDerivative(double x)
+{
+	return (2*orderPoli*getHermitePolinom(false,x));
+}
+double	GaussHermite::newtonMethodPolinoms(double kick)
+{	double R=kick+1,E1=10e-10,E2=10e-9;
 
+	while((fabs(getHermitePolinom(true,kick))>E1) && (fabs(R-kick)>E2))
+	{
+			R=kick;
+			kick-=(getHermitePolinom(true,kick)/getHermitePolinomDerivative(kick));
+	}
+	return  kick;
+
+}
+void	GaussHermite::allocRoots(int num)
+{
+	if(num>0)
+	{
+		if(roots)
+			delete []roots;
+
+		roots = new double[num];
+		if(!roots)
+		{
+			cout<<"Erro ao alocar"<<endl;
+		}
+
+	}
+	else
+	{
+		cout<<"Valor invalido para alocar"<<endl;
+	}
+
+}
+void	GaussHermite::generateRoots()
+{
+	int i;
+	double kick;
+
+	allocRoots(getOrderPoli());
+	setNumRoots(0);
+
+	for(i=0;i<getOrderPoli();i++)//Pelo pdf de edison seria getOrderPoli()-1, porém não faz sentido...
+	{
+		if(i==0)
+			kick=sqrt(2.0*getOrderPoli()+1 - 1.85575*pow(2.0*getOrderPoli()+1,-0.16667));
+		else
+		if(i==1)
+			kick-=1.14*pow(getOrderPoli(),0.426)/kick;
+		else
+		if(i==2)
+			kick=1.86*kick-0.86*roots[0];
+		else
+		if(i==3)
+			kick=1.91*kick-0.91*roots[1];
+		else
+			kick=2.0*kick-roots[i-2];
+
+		roots[i]=newtonMethodPolinoms(kick);
+		setNumRoots(getNumRoots()+1);
+
+	}
+
+}
 GaussHermite::GaussHermite()
 {
 	poli = new int[1];
 	poli2 = new int[1];
+	roots = NULL;
 	poli[0]=1;
 	poli2[0]=0;
-	ordemPoli=0;
-	ordemPoli2=0;
+	orderPoli=0;
+	orderPoli2=0;
+	numRoots=0;
 }
 GaussHermite::~GaussHermite()
 {
@@ -211,39 +292,74 @@ GaussHermite::~GaussHermite()
 	if(poli2)
 		free(poli2);
 }
+int	GaussHermite::getOrderPoli()
+{
+	return orderPoli;
+}
+int	GaussHermite::getOrderPoli2()
+{
+	return orderPoli2;
+}
+int	GaussHermite::getNumRoots()
+{
+	return numRoots;
+}
+void	GaussHermite::setOrderPoli(int order)
+{
+	orderPoli=order;
+}
+void	GaussHermite::setOrderPoli2(int order)
+{
+	orderPoli2=order;
+}
+void	GaussHermite::setNumRoots(int num)
+{
+	numRoots = num;
+}
+void	GaussHermite::printPolinomsRoots()
+{
+	cout<<"Roots: ";
+	for(int c=0; c<getNumRoots();c++)
+		cout<<roots[c]<<" ";
+	cout<<endl;
+}
 void	GaussHermite::printHermitePolinoms()
-{	int c;
-	bool something;
+{
+	int c;
 
-	cout<<"P("<<ordemPoli<<"): ";
-	for(c=ordemPoli,something=false ;c>-1; c--)
-	{
+	cout<<"P("<<orderPoli<<"): ";
+	for(c=orderPoli; c>-1; c--)
 		if(poli[c])
-		{
-			something=true;
 			cout<<poli[c]<<"*"<<"x^"<<c<<" ";
-		}
-	}
 
 	cout<<endl;
-	cout<<"P("<<ordemPoli2<<"): ";
-	for(c=ordemPoli2,something=false;c>-1;c--)
-	{
-		if(poli2[c])
-		{
-			something=true;
+	cout<<"P("<<orderPoli2<<"): ";
+	for(c=orderPoli2; c>-1; c--)
 			cout<<poli2[c]<<"*"<<"x^"<<c<<" ";
-		}
-	}
+
 	cout<<endl;
 
 }
 void 	GaussHermite::solveIntegration(const bool &saveLog)
-{	int c=1;
-	while(1)
+{	int c=2,fat=1;//O primeiro é pulado por ser trivial
+	double newResult,oldResult=0,weight;
+	newResult=getFunction(&oldResult)* 1.77245385090551;// 1.77245385090551 é o peso para P(1), que é constante e a raiz de P(1) é 0
+
+	while(fabs(newResult-oldResult)>E && c>14)//Fatorial estoura lindamente!
 	{
-		generateHermitePolinoms(c++);
+		oldResult=newResult;
+		newResult=0;
+		generateHermitePolinoms(c);
 		printHermitePolinoms();
+		generateRoots();
+		printPolinomsRoots();
+		fat*=c;
+		for(int c1=0,weight = ((2<<(c+1))*fat*1.77245385090551) ;c1<c; c1++)
+			newResult+=((weight*getFunction(roots+c1))/(getHermitePolinomDerivative(roots[c1])*getHermitePolinomDerivative(roots[c1])));
+
 		pause;
+		c++;
+
+
 	}
 }

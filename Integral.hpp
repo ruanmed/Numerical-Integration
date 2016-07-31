@@ -56,13 +56,29 @@ class Trapezium: public Integral
 class GaussHermite: public Integral
 {
 	private:
-		int	*poli,*poli2;
-		int ordemPoli,ordemPoli2;
+		int	*poli;
+		int *poli2;
+		double *roots;
+		int orderPoli;
+		int orderPoli2;
+		int numRoots;
+
 		void	generateHermitePolinoms(int order);
-		double  getHermitePolinom(double x);
+		double  getHermitePolinom(bool Switch,double x);
+		double  getHermitePolinomDerivative(double x);
+		double	newtonMethodPolinoms(double kick);
+		void	allocRoots(int num);
+		void	generateRoots();
 	public:
 		GaussHermite();
 		~GaussHermite();
+		int	getOrderPoli();
+		int	getOrderPoli2();
+		int	getNumRoots();
+		void	setOrderPoli(int order);
+		void	setOrderPoli2(int order);
+		void	setNumRoots(int num);
+		void	printPolinomsRoots();
 		void	printHermitePolinoms();
 		void 	solveIntegration(const bool &saveLog);
 };

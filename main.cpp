@@ -82,9 +82,7 @@ int Questao_1()
 int Questao_3()
 {
 	GaussHermite integral;
-
-	integral.printHermitePolinoms();
-	pause;
+	//Ler a função sem e^(-x^2) e deixar isso explicito
 	integral.solveIntegration(true);
 
 
