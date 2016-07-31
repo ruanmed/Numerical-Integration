@@ -358,20 +358,20 @@ void 	GaussHermite::solveIntegration(const bool &saveLog)
 	while((fabs(newResult-oldResult)>E && c<10) || c==2)//Fatorial estoura lindamente!
 	{
 		if(saveLog)
-			file<<"P("<<getOrderPoli()<<") gera a integral de valor:  "<<newResult/2<<endl;
+			file<<"P("<<getOrderPoli()<<") gera a integral de valor:  "<<newResult<<endl;
 		oldResult=newResult;
 		newResult=0;
 		generateHermitePolinoms(c);
 		generateRoots();
 		fat*=c;
-		for(int c1=0,weight = ((2<<(c+1))*fat*1.77245385090551) ;c1<c; c1++)
+		for(int c1=0,weight = ((2<<(c))*fat*1.77245385090551) ;c1<c; c1++)
 			newResult+=((weight*getFunction(roots+c1))/(getHermitePolinomDerivative(roots[c1])*getHermitePolinomDerivative(roots[c1])));
 		c++;
 	}
 
 	if(saveLog)
 		file<<"P("<<getOrderPoli()<<") gera a integral de valor:  "<<newResult/2<<endl;
-	setResult(newResult/2);
+	setResult(newResult);
 }
 void	GaussHermite::showSolution()
 {
