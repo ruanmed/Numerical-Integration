@@ -206,6 +206,7 @@ void Trapezium::solveIntegration2(const bool &saveLog)
 }
 
 void 	Boole::solveIntegration(const bool &saveLog){
+
 	setError(E);
 	if (getUpperLimit() == getBottomLimit())
 			setResult(0);
