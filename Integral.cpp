@@ -206,6 +206,7 @@ void Trapezium::solveIntegration2(const bool &saveLog)
 }
 
 void 	Boole::solveIntegration(const bool &saveLog){
+	setError(E);
 	if (getUpperLimit() == getBottomLimit())
 			setResult(0);
 	else {
@@ -236,7 +237,6 @@ void 	Boole::solveIntegration(const bool &saveLog){
 						"-- Valor da integral = " << setprecision(7) << getResult() << endl;
 			}
 		} while (fabs(getResult()-aux) > E);
-		setError(E);
 
 		if (saveLog){
 			file << endl << fixed << setprecision(0) <<
