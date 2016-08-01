@@ -115,6 +115,7 @@ void Problema_2(){
 	integral.setLimits(a,b);
 
 	cout << "Processando..." << endl;
+	cout << "Isso pode demorar um pouco para funções muito irregurales." << endl;
 
 	integral.solveIntegration(op);
 	integral.showSolution();
@@ -127,8 +128,6 @@ void Problema_3()
 	GaussHermite integral;
 	string ler;//Ler a função sem e^(-x^2) e deixar isso explicito//concaternar com e^(-x^2) depois..
 	bool op;
-
-
 	cout<<"Integracao numerica usando a quadratura de Gauss-Hermite"<<endl;
 	cout<<"Digite uma função que multiplicada por e^(-x^2) no intervalo de menos infinito a mais infinito tem  integral convergente"<<endl;
 	cout << "f(x) = ";
