@@ -72,6 +72,8 @@ double Trapezium::partitionatedIntervalIntegralSolution(double begin,double end,
 }
 
 void 	Boole::solveIntegration(const bool &saveLog){
+
+	setError(E);
 	if (getUpperLimit() == getBottomLimit())
 			setResult(0);
 	else {
@@ -414,7 +416,7 @@ void 	GaussHermite::solveIntegration(const bool &saveLog)
 	}
 
 	if(saveLog)
-		file<<"P("<<getOrderPoli()<<") gera a integral de valor:  "<<newResult/2<<endl;
+		file<<"P("<<getOrderPoli()<<") gera a integral de valor:  "<<newResult<<endl;
 	setResult(newResult);
 }
 void	GaussHermite::showSolution()
