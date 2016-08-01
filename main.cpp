@@ -115,7 +115,7 @@ void Problema_2(){
 	integral.setLimits(a,b);
 
 	cout << "Processando..." << endl;
-	cout << "Isso pode demorar um pouco para funções muito irregurales." << endl;
+	cout << "Isso pode demorar um pouco para funções muito irregurales em intervalos grandes." << endl;
 
 	integral.solveIntegration(op);
 	integral.showSolution();
@@ -128,8 +128,8 @@ void Problema_3()
 	GaussHermite integral;
 	string ler;//Ler a função sem e^(-x^2) e deixar isso explicito//concaternar com e^(-x^2) depois..
 	bool op;
-	cout<<"Integracao numerica usando a quadratura de Gauss-Hermite"<<endl;
-	cout<<"Digite uma função que multiplicada por e^(-x^2) no intervalo de menos infinito a mais infinito tem  integral convergente"<<endl;
+	cout<<"Integração Numérica usando a quadratura de Gauss-Hermite"<<endl;
+	cout<<"Digite uma função que multiplicada por e^(-x^2) no intervalo de menos infinito a mais infinito tem integral convergente."<<endl;
 	cout << "f(x) = ";
 
 	getline(cin, ler);
@@ -138,14 +138,15 @@ void Problema_3()
 
 	integral.readFunction(ler);
 
-	cout << "Deseja salvar um registro da expansao dos polinomios do programa?" <<"(Isso afetará bastante o desempenho do programa)" << endl <<"[1] Sim [0] Não" << endl;
+	cout << "Deseja salvar um registro da expansão dos polinômios do programa?" <<"(Isso afetará bastante o desempenho do programa)" << endl <<"[1] Sim [0] Não" << endl;
 	cin >> op;
 	getchar();
 	if (op)
-		cout << endl << "O registro de divisões do programa será salvo no arquivo log.txt"<<endl;
+		cout << endl << "O registro da expansão dos polinômios do programa será salvo no arquivo log.txt"<<endl;
 	pauseclear;
 
 	cout << "Processando..." << endl;
+	cout << "Isso pode demorar um pouco se você selecionou para salvar o registro das expansões." << endl;
 
 	integral.solveIntegration(op);
 	pauseclear;

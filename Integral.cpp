@@ -14,6 +14,103 @@ double	Integral::getFunction(const double &val){
 	return function.Eval(t);
 }
 
+Integral::Integral(){
+	setLimits(0,0);
+	setResult(0);
+	setError(0);
+	file.open("log.txt");
+}
+
+Integral::~Integral(){
+	file.close();
+}
+
+void Integral::setBottomLimit(const double &newBottomLimit){
+	bottomLimit = newBottomLimit;
+}
+
+void Integral::setUpperLimit(const double &newUpperLimit){
+	upperLimit = newUpperLimit;
+}
+
+void Integral::setLimits(const double &a, const double &b){
+	setBottomLimit(a);
+	setUpperLimit(b);
+}
+
+void Integral::setResult(const double &newResult){
+	result = newResult;
+}
+void Integral::setError(const double &newError){
+	error = newError;
+}
+
+double Integral::getBottomLimit(){
+	return bottomLimit;
+}
+
+double Integral::getUpperLimit(){
+	return upperLimit;
+}
+
+double Integral::getResult(){
+	return result;
+}
+double	Integral::getError(){
+	return error;
+}
+void	Integral::setFunction(string &f)
+{
+	sfunction = f;
+}
+string	Integral::getFunction()
+{
+	return sfunction;
+}
+void Integral::readFunction(string &f){
+	setFunction(f);
+	while (true){
+		int res = function.Parse(f, "x");
+		if (res < 0)
+			break;
+		std::cout << std::string(res+7, ' ') << "^\n"
+					<< function.ErrorMsg() << "\n\n";
+	}
+}
+void Trapezium::setLimits(const double &a, const double &b){
+	if (a < b){
+		setBottomLimit(a);
+		setUpperLimit(b);
+		sinal = false;
+	}
+	else {
+		setBottomLimit(b);
+		setUpperLimit(a);
+		sinal = true;
+	}
+}
+
+void Integral::showSolution(){
+	file << fixed << setprecision(7)<< "A solucao da integral de f(x) = " << getFunction() <<
+			" , no intervalo de " << getBottomLimit() <<
+			" até " << setprecision(7) << getUpperLimit() << " eh: " << setprecision(7) <<
+			getResult() << endl<<"O erro associado é de: " << setprecision(7) <<getError()<<endl;
+	cout << fixed << setprecision(7)<< "A solucao da integral de f(x) = " << getFunction() <<
+			" , no intervalo de " << getBottomLimit() <<
+			" até " << setprecision(7) << getUpperLimit() << " eh: " << setprecision(7) <<
+			getResult() << endl<<"O erro associado é de: " << setprecision(7) <<getError()<<endl;
+}
+
+void Trapezium::solveIntegration(const bool &saveLog)
+{
+	if (getUpperLimit() == getBottomLimit())
+			setResult(0);
+	else
+		partitionateInterval(saveLog);
+	if (sinal)
+		setResult(getResult()*-1);
+}
+
 void  Trapezium::partitionateInterval(const bool &saveLog){
 	double amp=(getUpperLimit()-getBottomLimit()),passo;
 	int c,divisoes;
@@ -71,6 +168,43 @@ double Trapezium::partitionatedIntervalIntegralSolution(double begin,double end,
 	return A;
 }
 
+void Trapezium::solveIntegration2(const bool &saveLog)
+{
+	if (getUpperLimit() == getBottomLimit())
+			setResult(0);
+	else {
+		double aux;
+		double divisoes = 1;	//Número de subintervalos
+		double dx;
+		double c;
+		do {
+			aux = getResult();
+			dx=(getUpperLimit()-getBottomLimit())/divisoes;
+
+			setResult((getFunction(getUpperLimit())+getFunction(getBottomLimit()))*0.5);
+
+			for (c = 1;c < divisoes;c++)
+				setResult(getResult()+getFunction((getBottomLimit()+(dx*c))));
+
+			setResult(dx*getResult());
+			divisoes++;
+			if (saveLog) {
+				file << endl << fixed << setprecision(0) <<
+						"Divisão parcial em " << divisoes << " intervalos de " << setprecision(7) << dx <<
+						"-- Valor da integral = " << setprecision(7) << getResult() << endl;
+			}
+		} while (fabs(getResult()-aux) > E);
+		setError(E);
+
+		if (saveLog){
+			file << endl << fixed << setprecision(0) <<
+					"Divisão em " << divisoes << " intervalos de " << setprecision(7) <<dx << '.' << endl;
+			cout << endl << fixed << setprecision(0) <<
+					"Divisão em " << divisoes << " intervalos de " << setprecision(7) << dx << '.' << endl;
+		}
+	}
+}
+
 void 	Boole::solveIntegration(const bool &saveLog){
 	if (getUpperLimit() == getBottomLimit())
 			setResult(0);
@@ -78,7 +212,7 @@ void 	Boole::solveIntegration(const bool &saveLog){
 		double aux;
 		double n = 1;
 		double divisoes = 4;	//Número de subintervalos
-		double dx=getUpperLimit()-getBottomLimit();
+		double dx;
 		double c;
 		do {
 			aux = getResult();
@@ -113,94 +247,6 @@ void 	Boole::solveIntegration(const bool &saveLog){
 	}
 }
 
-Integral::Integral(){
-	setLimits(0,0);
-	setResult(0);
-	setError(0);
-	file.open("log.txt");
-}
-
-Integral::~Integral(){
-	file.close();
-}
-
-void Integral::setBottomLimit(const double &newBottomLimit){
-	bottomLimit = newBottomLimit;
-}
-
-void Integral::setUpperLimit(const double &newUpperLimit){
-	upperLimit = newUpperLimit;
-}
-
-void Integral::setLimits(const double &a, const double &b){
-	if (a < b){
-		setBottomLimit(a);
-		setUpperLimit(b);
-	}
-	else {
-		setBottomLimit(b);
-		setUpperLimit(a);
-	}
-}
-
-void Integral::setResult(const double &newResult){
-	result = newResult;
-}
-void Integral::setError(const double &newError){
-	error = newError;
-}
-
-double Integral::getBottomLimit(){
-	return bottomLimit;
-}
-
-double Integral::getUpperLimit(){
-	return upperLimit;
-}
-
-double Integral::getResult(){
-	return result;
-}
-double	Integral::getError(){
-	return error;
-}
-void	Integral::setFunction(string &f)
-{
-	sfunction = f;
-}
-string	Integral::getFunction()
-{
-	return sfunction;
-}
-void Integral::readFunction(string &f){
-	setFunction(f);
-	while (true){
-		int res = function.Parse(f, "x");
-		if (res < 0)
-			break;
-		std::cout << std::string(res+7, ' ') << "^\n"
-					<< function.ErrorMsg() << "\n\n";
-	}
-}
-
-void Trapezium::solveIntegration(const bool &saveLog)
-{
-	if (getUpperLimit() == getBottomLimit())
-			setResult(0);
-		else
-			partitionateInterval(saveLog);
-}
-
-void Integral::showSolution(){
-	file << setprecision(6)<< "A solucao da integral de f(x) = " << getFunction() <<
-			" , no intervalo de " << getBottomLimit() <<
-			" até " << setprecision(6) << getUpperLimit() << " eh: " << setprecision(6) <<
-			getResult() << endl<<"O erro associado é de: "<<getError()<<endl;
-	cout << setprecision(6)<< "A solucao da integral de f(x) = " << getFunction() <<
-			" , no intervalo de " << getBottomLimit() <<
-			" até " << setprecision(6) << getUpperLimit() << " eh: " << setprecision(6) <<
-			getResult() << endl<<"O erro associado é de: "<<getError()<<endl;
-}
 void	GaussHermite::generateHermitePolinoms(int order)
 {
 	for(int c=getOrderPoli();c<order;c++)
@@ -414,7 +460,7 @@ void 	GaussHermite::solveIntegration(const bool &saveLog)
 	}
 
 	if(saveLog)
-		file<<"P("<<getOrderPoli()<<") gera a integral de valor:  "<<newResult/2<<endl;
+		file<<"P("<<getOrderPoli()<<") gera a integral de valor:  "<<newResult<<endl;
 	setResult(newResult);
 }
 void	GaussHermite::showSolution()

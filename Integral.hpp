@@ -44,10 +44,13 @@ class Integral{
 class Trapezium: public Integral
 {
 	private:
+		int sinal;
 		void  	partitionateInterval(const bool &saveLog = 0);
 		double 	partitionatedIntervalIntegralSolution(double begin,double end,const bool &saveLog = 0);
 	public:
+		void 	setLimits(const double &a, const double &b);
 		void 	solveIntegration(const bool &saveLog);
+		void 	solveIntegration2(const bool &saveLog);
 };
 
 class Boole: public Integral{
